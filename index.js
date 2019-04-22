@@ -4,9 +4,10 @@ const url = require('url')
 const net = require('net')
 
 const createRenderer = require('./electron-shell')
-const Geth = require('./ethereum_clients/geth')
 const { setupRpc } = require('./Rpc')
 const { getMenuTemplate } = require('./Menu')
+
+const { registerGlobalPluginHost } = require('./ethereum_clients/PluginHost')
 
 const log = {
   dev: require('debug')('dev'),
@@ -17,16 +18,19 @@ const log = {
 
 const { app, dialog, Menu } = require('electron')
 
-const { AppManager, registerPackageProtocol } = require('@philipplgh/electron-app-manager')
+const {
+  AppManager,
+  registerPackageProtocol
+} = require('@philipplgh/electron-app-manager')
 registerPackageProtocol()
 
 AppManager.on('menu-available', updaterTemplate => {
   const template = getMenuTemplate()
-  
+
   // replace old updater menu with new one
   const idx = template.findIndex(mItem => mItem.label === 'Updater')
   template[idx] = updaterTemplate
-  
+
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 })
 
@@ -45,6 +49,24 @@ const shellManager = new AppManager({
   electron: true
 })
 
+// TODO util
+app.on('web-contents-created', (event, contents) => {
+  // https://electronjs.org/docs/tutorial/security#11-verify-webview-options-before-creation
+  contents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload
+    delete webPreferences.preloadURL
+
+    console.log('will attach webview')
+
+    webPreferences.preload = path.join(__dirname, 'preload-webview')
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false
+  })
+})
+
+// TODO util
 const is = {
   dev: () =>
     process.env.NODE_ENV && process.env.NODE_ENV.trim() == 'development',
@@ -125,7 +147,6 @@ const startUI = async () => {
   })
 
   if (is.dev()) {
-
     // load user-provided package if possible
     if (fs.existsSync(path.join(__dirname, CONFIG_NAME))) {
       const { useDevSettings } = require(`./${CONFIG_NAME}`)
@@ -163,17 +184,9 @@ const startUI = async () => {
 
 // ########## MAIN APP ENTRY POINT #########
 const onReady = async () => {
-
-  if (process.env.GRID_MODE && process.env.GRID_MODE.trim() == 'plugin') {
-    require('./ethereum_clients/PluginHost')
-  } else {
-    // 0 prepare windows, menus etc
-    const geth = new Geth()
-    global.Geth = geth
-  }
+  registerGlobalPluginHost()
 
   // 1. start UI for quick user-feedback without long init procedures
   await startUI()
-
 }
 app.once('ready', onReady)

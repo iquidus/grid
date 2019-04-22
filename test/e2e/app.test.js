@@ -27,10 +27,9 @@ test('Should quit when main window is closed', async t => {
   await app.client.waitUntilWindowLoaded(10000)
 
   console.log('window 1', await app.client.getFocusedWindow())
-  await app.client.
 })
 
-test('', async t => {
+test('.', async t => {
   const app = t.context.app
   await app.client.waitUntilWindowLoaded(10000)
 })
