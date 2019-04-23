@@ -6,7 +6,7 @@ class ApplicationFactory {
   static development() {
     const params = {
       path: path.resolve('./node_modules/.bin/electron'),
-      env: ['-r', path.resolve('./index.js')]
+      args: [path.resolve('./index.js')]
     }
 
     console.log('development() app parameters', params);
