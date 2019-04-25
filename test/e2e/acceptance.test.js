@@ -4,6 +4,7 @@ import ClientAppBar from './_ClientAppBar'
 import MainAppBar from './_MainAppBar'
 import VersionList from './_VersionList'
 import rmGethDir from './_TestUtils'
+import Node from './_Node'
 
 const init = async function(t) {
   const app = t.context.app
@@ -15,7 +16,7 @@ const init = async function(t) {
 
 test.beforeEach(async t => {
   rmGethDir()
-  
+
   t.context.app = ApplicationFactory.development()
 
   // console.log(t.context.app);
@@ -42,14 +43,31 @@ test('As a user, I want to download a geth node', async t => {
   t.true(true)
 })
 
+test('As a user, I want to start/stop my geth node from the app UI', async t => {
+  const {app, client, win} = await init(t)
+  const versionList = new VersionList(app.client)
+  const node = new Node(app.client)
 
-// As a user, I want to download a node
+  await versionList.waitToLoad()
+  await versionList.clickOnItem(0)
+  await versionList.waitUntilVersionSelected(0)
+
+  await node.toggle('geth')
+  await node.waitUntilStarted()
+
+  await node.toggle('geth')
+  await node.waitUntilStopped()
+
+  t.true(true)
+})
+
+// As a user, I want to download a geth node
 // As a user, I want to start/stop my geth node from the app UI. #38
 // As a user, I want to configure my node settings and options easily. #37
 // As a user, I want to have the connection details remembered, so I can have a consistent use of the app #23
 // As a user, I want to be reminded of updates on the app itself, so I can get latest features and fixes. #33
 // As a user, I want to see sync status visually, so I don't have to parse the logs and guess #73
 // As a user, I want to provide an existing network data directory, so that I don't have two copies of the network. #35
-// As a developer, I want to test Grid-UI build channels from the Grid [shell] interface, so we can ensure app quality standards #87
 // As a user, I want to be notified when a new version of my node is available, so I don't fork. #22
 // As a user, I want to download codesigned applications, so it works without nasty warnings on my OS #114
+// As a developer, I want to test Grid-UI build channels from the Grid [shell] interface, so we can ensure app quality standards #87
