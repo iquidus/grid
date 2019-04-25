@@ -4,17 +4,53 @@ class VersionList {
   }
 
   get items() {
-    return this.client.elements('[data-test-id=version-list] > [role=button]')
+    return this.client.$$('[data-test-id=version-list] > [role=button]')
   }
 
   get self() {
-    return this.client.element('[data-test-id=version-list]')
+    return this.client.$('[data-test-id=version-list]')
   }
 
-  getItemAt(index) {
+  get localItems(){
+    return this.client.$$('[data-test-id=version-list] > [data-test-is-downloaded=true]')
+  }
+
+  get remoteItems(){
+    // return this.client.$(`[data-test-id=version-list] > [role=button]:nth-child(3)`)
+
+    return this.client.$$('[data-test-id=version-list] > [data-test-is-downloaded=false]')
+  }
+
+  get selectedItem() {
+    return this.client.$(this.selectedItemSelector)
+  }
+
+  get selectedItemSelector() {
+    return '[data-test-id=version-list] > [data-test-is-selected=true]'
+  }
+
+  itemAt(index) {
     // nth-child is not zero-based
     index++
-    return this.client.element(`[data-test-id=version-list] > [role=button]:nth-child(${index})`)
+    return this.client.$(`[data-test-id=version-list] > [role=button]:nth-child(${index})`)
+  }
+
+  // Actions
+  clickOnItem(index = 0) {
+    // nth-of-type is not zero-based
+    index++
+    return this.client.$('[data-test-id=version-list]').$(`[role=button]:nth-of-type(${index})`).click()
+  }
+
+  // Events
+  waitToLoad() {
+    return this.client.waitUntilTextExists('h6', '61 versions available', 5000)
+  }
+
+  waitUntilVersionSelected(index = 0) {
+    // nth-child is not zero-based
+    index++
+    return this.client.waitUntilTextExists(`[data-test-id=version-list] [role=button]:nth-child(${index}) span span`, 'SELECTED', 20000)
   }
 }
 

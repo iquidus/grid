@@ -1,10 +1,8 @@
 import test from 'ava';
-import {Application} from 'spectron';
+import ApplicationFactory from './_ApplicationFactory'
 
 test.beforeEach(async t => {
-  t.context.app = new Application({
-    path: '/Applications/Grid.app/Contents/MacOS/Grid'
-  });
+  t.context.app = ApplicationFactory.development()
 
   await t.context.app.start();
 });
