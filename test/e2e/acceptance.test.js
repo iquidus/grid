@@ -3,6 +3,7 @@ import ApplicationFactory from './_ApplicationFactory'
 import ClientAppBar from './_ClientAppBar'
 import MainAppBar from './_MainAppBar'
 import VersionList from './_VersionList'
+import rmGethDir from './_TestUtils'
 
 const init = async function(t) {
   const app = t.context.app
@@ -13,6 +14,8 @@ const init = async function(t) {
 }
 
 test.beforeEach(async t => {
+  rmGethDir()
+  
   t.context.app = ApplicationFactory.development()
 
   // console.log(t.context.app);
@@ -28,8 +31,6 @@ test('As a user, I want to download a geth node', async t => {
   const versionList = new VersionList(app.client)
 
   await versionList.waitToLoad()
-
-  // Click on first list item
   await versionList.clickOnItem(0)
 
   // Wait for download to start
@@ -40,6 +41,7 @@ test('As a user, I want to download a geth node', async t => {
 
   t.true(true)
 })
+
 
 // As a user, I want to download a node
 // As a user, I want to start/stop my geth node from the app UI. #38
