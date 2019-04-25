@@ -32,7 +32,10 @@ test('As a user, I want to download a geth node', async t => {
   // Click on first list item
   await versionList.clickOnItem(0)
 
-  // Wait for download
+  // Wait for download to start
+  await versionList.waitUntilVersionDownloading(0)
+
+  // Wait for download to finish
   await versionList.waitUntilVersionSelected(0)
 
   t.true(true)

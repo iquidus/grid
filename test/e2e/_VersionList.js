@@ -52,6 +52,12 @@ class VersionList {
     index++
     return this.client.waitUntilTextExists(`[data-test-id=version-list] [role=button]:nth-child(${index}) span span`, 'SELECTED', 20000)
   }
+
+  waitUntilVersionDownloading(index = 0) {
+    // nth-child is not zero-based
+    index++
+    return this.client.waitUntilTextExists(`[data-test-id=version-list] [role=button]:nth-child(${index}) span span`, 'DOWNLOADING', 1000)
+  }
 }
 
 export default VersionList
