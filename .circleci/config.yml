@@ -14,7 +14,7 @@ aliases:
         - node-v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "yarn.lock" }}
         - node-v1--
 
-  # Caches electron build files by job type, to avoid caching only 
+  # Caches electron build files by job type, to avoid caching only
   # one arch and cache-missing from other jobs
   - &save_electron_cache
     save_cache:
@@ -28,9 +28,17 @@ aliases:
         - electron-builder-v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "yarn.lock" }}
         - electron-builder-v1--
 
+  - &node_installation
+    run:
+      name: "Update Node.js and npm if on MacOS"
+      command: |
+        if [ $CIRCLE_JOB == 'build-mac' ] then
+          bash ./install_node.sh
+        fi;
+
   # Custom task removes unnecessary build files before uploading release directory
   - &before_store_artifacts
-    run: 
+    run:
       name: Preparing for artifact upload
       command: rm -rf release/*-unpacked release/mac
 
@@ -43,9 +51,10 @@ aliases:
 
   - &run_script
     run: yarn release --$GRID_ENV
-  
+
   - &run_steps
     steps:
+      - *node_installation
       - checkout
       - *restore_modules_cache
       - *install
@@ -53,12 +62,12 @@ aliases:
       - *save_modules_cache
       - *before_store_artifacts
       - *upload_artifacts
-    
+
 jobs:
   build:
     docker:
       - image: electronuserland/builder:10
-    environment: 
+    environment:
       GRID_ENV: linux
     working_directory: ~/repo
     <<: *run_steps
@@ -67,7 +76,7 @@ jobs:
   build-win:
     docker:
       - image: electronuserland/builder:wine
-    environment: 
+    environment:
       GRID_ENV: win
     working_directory: ~/repo
     <<: *run_steps
@@ -75,7 +84,7 @@ jobs:
   build-mac:
     macos:
       xcode: '9.0'
-    environment: 
+    environment:
       GRID_ENV: mac
     working_directory: ~/repo
     <<: *run_steps
