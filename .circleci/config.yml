@@ -31,10 +31,7 @@ aliases:
   - &node_installation
     run:
       name: "Update Node.js and npm if on MacOS"
-      command: |
-        if [ $CIRCLE_JOB == 'build-mac' ] then
-          bash ./install_node.sh
-        fi;
+      command: bash install_node.sh
 
   # Custom task removes unnecessary build files before uploading release directory
   - &before_store_artifacts
