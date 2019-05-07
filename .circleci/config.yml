@@ -51,8 +51,8 @@ aliases:
 
   - &run_steps
     steps:
-      - *node_installation
       - checkout
+      - *node_installation
       - *restore_modules_cache
       - *install
       - *run_script
