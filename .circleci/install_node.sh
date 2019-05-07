@@ -2,8 +2,9 @@
 
 if [[ $CIRCLE_JOB == 'build-mac' ]]
 then
-  curl "https://nodejs.org/dist/v10.0.0/node-v10.0.0.pkg" > "$HOME/Downloads/node-latest.pkg" && sudo installer -store -pkg "$HOME/Downloads/node-latest.pkg" -target "/"
-  curl https://www.npmjs.com/install.sh | sudo bash
+  brew install node@10
+  brew upgrade yarn
 fi;
 
-echo `node -v`
+echo `node --version`
+echo `yarn --version`
