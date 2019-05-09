@@ -52,7 +52,7 @@ aliases:
   - &run_steps
     steps:
       - checkout
-      - *node_installation
+      # - *node_installation
       - *restore_modules_cache
       - *install
       - *run_script

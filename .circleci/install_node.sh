@@ -5,7 +5,9 @@ then
   brew unlink node
   brew install node@10
   brew link --overwrite node@10 --force
-  brew install yarn --ignore-dependencies --force
+
+  brew inlink yarn
+  brew install yarn --ignore-dependencies
 fi;
 
 echo `node --version`
