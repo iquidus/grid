@@ -75,7 +75,20 @@ class Plugin extends EventEmitter {
   async getLocalBinary(release) {
     const extractBinary = async (pkg, binaryName) => {
       const entries = await this.updater.getEntries(pkg)
-      const binaryEntry = entries.find(e => e.relativePath.endsWith(binaryName))
+      let binaryEntry = undefined
+      if (binaryName) {
+        binaryEntry = entries.find(e => e.relativePath.endsWith(binaryName))
+      } else {
+        // try to detect binary
+        // const isExecutable = mode => Boolean((mode & 0o0001) || (mode & 0o0010) || (mode & 0o0100))
+        if (process.platform === 'win32') {
+          binaryEntry = entries.find(e => e.relativePath.endsWith('.exe'))
+        } else {
+          // no heuristic available: pick first
+          binaryEntry = entries[0]
+        }
+      }
+
       const destAbs = path.join(this.cacheDir, binaryName)
       // The unlinking might fail if the binary is e.g. being used by another instance
       if (fs.existsSync(destAbs)) {
