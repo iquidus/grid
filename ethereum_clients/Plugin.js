@@ -54,7 +54,8 @@ class Plugin extends EventEmitter {
       'connected',
       'error',
       'stopped',
-      'log'
+      'log',
+      'notification'
     ]
     eventTypes.forEach(eventName => {
       sourceEmitter.on(eventName, arg => {
