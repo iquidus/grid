@@ -42,7 +42,7 @@ class PluginHost extends EventEmitter {
     const plugin = new Plugin(pluginConfig)
     return plugin
   }
-  async loadPluginFromPackage(pkg) {
+  async loadPluginFromPackage(pluginManager, pkg) {
     const index = await pluginManager.getEntry(pkg, 'package/index.js')
     const indexContent = await index.file.readContent()
     const pluginConfig = requireFromString(
@@ -65,6 +65,9 @@ class PluginHost extends EventEmitter {
     let releases = remotePluginList.map(async pluginShortInfo => {
       try {
         const { location } = pluginShortInfo
+        if (!location) {
+          throw new Error('external plugin does not specify a valid location')
+        }
         if (fs.existsSync(location)) {
           // load package from provided path
           // FIXME allow this only in dev mode
@@ -80,7 +83,7 @@ class PluginHost extends EventEmitter {
           }
         } else {
           const pluginManager = new AppManager({
-            repository: pluginShortInfo.repository,
+            repository: location,
             auto: false,
             paths: [],
             cacheDir: getPluginCachePath(pluginShortInfo.name)
@@ -98,9 +101,10 @@ class PluginHost extends EventEmitter {
               return undefined
             }
           }
+          const plugin = await this.loadPluginFromPackage(pluginManager, latest)
+          return plugin
         }
-        const plugin = await this.loadPluginFromPackage(latest)
-        return plugin
+        return undefined
       } catch (error) {
         const { name } = pluginShortInfo
         console.log(`remote plugin ${name} could not be loaded`, error)
