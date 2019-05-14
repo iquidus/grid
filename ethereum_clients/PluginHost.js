@@ -97,9 +97,21 @@ class PluginHost extends EventEmitter {
           if (latest.remote) {
             latest = await pluginManager.download(latest)
             if (!latest) {
-              console.log('error: plugin could not be fetched')
-              return undefined
+              throw new Error('error: plugin could not be fetched')
             }
+          }
+          // plugin verification necessary for remote plugins:
+          if (!latest.verificationResult) {
+            throw new Error('external plugin has no verification info')
+          }
+          const { isValid, isTrusted } = latest.verificationResult
+          if (!isValid) {
+            throw new Error('invalid plugin signature: unsigned or corrupt?')
+          }
+          if (!isTrusted) {
+            console.log(
+              "WARNING: the plugin is signed but the author's key is unknown"
+            )
           }
           const plugin = await this.loadPluginFromPackage(pluginManager, latest)
           return plugin
