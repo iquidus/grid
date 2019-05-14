@@ -2,12 +2,15 @@
 
 if [[ $CIRCLE_JOB == 'build-mac' ]]
 then
-  brew unlink node
-  brew install node@10
-  brew link --overwrite node@10 --force
 
-  brew inlink yarn
-  brew install yarn --ignore-dependencies
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  nvm install 10
+
+  curl -o- -L https://yarnpkg.com/install.sh | bash --version=1.15.2
+  source ~/.bashrc
 fi;
 
 echo `node --version`

@@ -5,6 +5,7 @@ import MainAppBar from './_MainAppBar'
 import VersionList from './_VersionList'
 import rmGethDir from './_TestUtils'
 import Node from './_Node'
+import ClientSettingsForm from './_ClientSettingsForm'
 
 const init = async function(t) {
   const app = t.context.app
@@ -33,13 +34,10 @@ test('As a user, I want to download a geth node', async t => {
 
   await versionList.waitToLoad()
   await versionList.clickOnItem(0)
-
-  // Wait for download to start
   await versionList.waitUntilVersionDownloading(0)
-
-  // Wait for download to finish
   await versionList.waitUntilVersionSelected(0)
 
+  // No errors, test passed
   t.true(true)
 })
 
@@ -58,6 +56,32 @@ test('As a user, I want to start/stop my geth node from the app UI', async t => 
   await node.toggle('geth')
   await node.waitUntilStopped()
 
+  // No errors, test passed
+  t.true(true)
+})
+
+test('As a user, I want to configure Geth settings', async t => {
+  const {app, client, win} = await init(t)
+  const versionList = new VersionList(app.client)
+  const node = new Node(app.client)
+  const clientAppBar = new ClientAppBar(app.client)
+  const settings = new ClientSettingsForm(app.client)
+
+  await versionList.waitToLoad()
+  await versionList.clickOnItem(0)
+  await versionList.waitUntilVersionSelected(0)
+
+  await clientAppBar.settings.click()
+  await settings.getInput('dataDir').setValue('/tmp/datadir')
+  await settings.getInput('cache').setValue('1337')
+  await settings.chooseSelectOption('syncMode', 'light')
+  await settings.chooseSelectOption('api', 'websockets')
+  await settings.chooseSelectOption('network', 'rinkeby')
+
+  await node.toggle('geth')
+  await node.waitUntilStarted()
+
+  // No errors, test passed
   t.true(true)
 })
 
