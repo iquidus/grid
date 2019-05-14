@@ -1,0 +1,26 @@
+[
+  {
+    "name": "raiden",
+    "displayName": "Raiden Network",
+    "type": "tools",
+    "author": {
+      "name": "Philipp Langhans",
+      "email": "philipp@ethereum.org",
+      "address": "0x00000000000000000000"
+    },
+    "location": "D:/Projects/grid-raiden-plugin",
+    "order": 6
+  },
+  {
+    "name": "bla",
+    "displayName": "Raiden Network",
+    "type": "tools",
+    "author": {
+      "name": "Philipp Langhans",
+      "email": "philipp@ethereum.org",
+      "address": "0x00000000000000000000"
+    },
+    "repository": "https://github.com/PhilippLgh/grid-raiden-extensions",
+    "order": 6
+  }
+]
