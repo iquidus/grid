@@ -1,5 +1,3 @@
-const delay = time => new Promise(resolve => setTimeout(resolve, time));
-
 class ClientSettingsForm {
   constructor (client) {
     this.client = client

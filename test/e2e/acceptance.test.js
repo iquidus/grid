@@ -6,6 +6,7 @@ import VersionList from './_VersionList'
 import rmGethDir from './_TestUtils'
 import Node from './_Node'
 import ClientSettingsForm from './_ClientSettingsForm'
+import {getProcess, getProcessFlags} from './_ProcessMatcher'
 
 const init = async function(t) {
   const app = t.context.app
@@ -36,9 +37,6 @@ test('As a user, I want to download a geth node', async t => {
   await versionList.clickOnItem(0)
   await versionList.waitUntilVersionDownloading(0)
   await versionList.waitUntilVersionSelected(0)
-
-  // No errors, test passed
-  t.true(true)
 })
 
 test('As a user, I want to start/stop my geth node from the app UI', async t => {
@@ -53,11 +51,11 @@ test('As a user, I want to start/stop my geth node from the app UI', async t => 
   await node.toggle('geth')
   await node.waitUntilStarted()
 
+  const startedGeth = await getProcess('geth')
+  t.assert(startedGeth.pid > 0)
+
   await node.toggle('geth')
   await node.waitUntilStopped()
-
-  // No errors, test passed
-  t.true(true)
 })
 
 test('As a user, I want to configure Geth settings', async t => {
@@ -81,9 +79,18 @@ test('As a user, I want to configure Geth settings', async t => {
   await node.toggle('geth')
   await node.waitUntilStarted()
 
-  // No errors, test passed
-  t.true(true)
+  const gethFlags = await getProcessFlags('geth')
+  console.log(gethFlags);
+  t.assert(gethFlags == [
+     '--datadir', '/tmp/datadir',
+     '--syncmode', 'light',
+     '--rpcapi', 'websockets',
+     '--rinkeby',
+     '--cache', '1337',
+  ])
+
 })
+
 
 // As a user, I want to download a geth node
 // As a user, I want to start/stop my geth node from the app UI. #38
