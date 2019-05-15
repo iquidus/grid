@@ -14,22 +14,18 @@ class ClientSettingsForm {
   }
 
   async chooseSelectOption(name, value) {
-    await delay(200)
     await this.getSelect(name).click()
     await this.selectPopupMenuOptionByValue(value).click()
-
-    // waits until uppermost layer has been removed from DOM
-    const client = this.client
-    await this.client.waitUntil(async () => {
-      const modal = await client.$('div[role=presentation]')
-      return modal.state === 'failure'
-    })
+    await this.waitUntilModalIsClosed()
   }
 
   selectPopupMenuOptionByValue(value) {
     return this.client.$('div[role=presentation]').$(`[data-value=${value}]`)
   }
 
+  waitUntilModalIsClosed() {
+    return this.client.waitUntil(async () => (await this.client.$('div[role=presentation]')).state === 'failure')
+  }
 }
 
 export default ClientSettingsForm
