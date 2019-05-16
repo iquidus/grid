@@ -70,7 +70,6 @@ const generateFlags = (userConfig, nodeSettings) => {
 
   userConfigEntries.map(e => {
     let flag
-
     let configEntry = nodeSettings.find(s => s.id === e)
     let flagStr = configEntry.flag
 
@@ -82,7 +81,7 @@ const generateFlags = (userConfig, nodeSettings) => {
         f => userConfig[e] === f.value || userConfig[e] === f
       )
 
-      if (!selectedOption['flag']) {
+      if (typeof selectedOption['flag'] !== 'string') {
         throw `Option "${selectedOption.value ||
           selectedOption}" must have the "flag" key`
       }

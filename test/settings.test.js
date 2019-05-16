@@ -86,6 +86,24 @@ describe('generateFlags', function() {
     assert.deepEqual(flags, ['--rinkeby'])
   })
 
+  it('full options should allow empty flags', function() {
+    const input = {
+      network: 'mainnet'
+    }
+    const settings = [
+      {
+        id: 'network',
+        options: [
+          { value: 'ropsten', flag: '--testnet' },
+          { value: 'mainnet', flag: '' }
+        ]
+      }
+    ]
+
+    const flags = generateFlags(input, settings)
+    assert.deepEqual(flags, [])
+  })
+
   it('should parse value with full options', function() {
     const input = {
       syncmode: 'light'
@@ -93,7 +111,6 @@ describe('generateFlags', function() {
     const settings = [
       {
         id: 'syncmode',
-        default: 'main',
         options: [
           { value: 'fast', flag: '--syncmode %s' },
           { value: 'light', flag: '--syncmode %s --maxpeers=100' }
@@ -134,8 +151,6 @@ describe('generateFlags error handling', function() {
       {
         id: 'sync',
         options: ['light', 'fast', 'full']
-        // correct value:
-        // flag: ''
       }
     ]
 
@@ -149,11 +164,7 @@ describe('generateFlags error handling', function() {
     const settings = [
       {
         id: 'network',
-        options: [
-          { value: 'main', label: 'Main' }
-          // Correct value:
-          // { value: 'main', label: 'Main', flag: '' }
-        ]
+        options: [{ value: 'main', label: 'Main' }]
       }
     ]
 
