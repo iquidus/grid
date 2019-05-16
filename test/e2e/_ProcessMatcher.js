@@ -8,7 +8,9 @@ const getProcess = async (name) => {
 
 const getProcessFlags = async (name) => {
   const p = await getProcess(name)
-  return p.cmd.split(' ').shift()
+  const flags = p.cmd.split(' ')
+  flags.shift()
+  return flags
 }
 
 export {getProcess, getProcessFlags}

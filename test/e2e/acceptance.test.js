@@ -37,6 +37,8 @@ test('As a user, I want to download a geth node', async t => {
   await versionList.clickOnItem(0)
   await versionList.waitUntilVersionDownloading(0)
   await versionList.waitUntilVersionSelected(0)
+
+  t.pass()
 })
 
 test('As a user, I want to start/stop my geth node from the app UI', async t => {
@@ -56,6 +58,8 @@ test('As a user, I want to start/stop my geth node from the app UI', async t => 
 
   await node.toggle('geth')
   await node.waitUntilStopped()
+
+  t.pass()
 })
 
 test('As a user, I want to configure Geth settings', async t => {
@@ -80,15 +84,13 @@ test('As a user, I want to configure Geth settings', async t => {
   await node.waitUntilStarted()
 
   const gethFlags = await getProcessFlags('geth')
-  console.log(gethFlags);
-  t.assert(gethFlags == [
-     '--datadir', '/tmp/datadir',
-     '--syncmode', 'light',
-     '--rpcapi', 'websockets',
-     '--rinkeby',
-     '--cache', '1337',
-  ])
-
+  const gf = gethFlags.join(' ')
+  // t.assert(gethFlags == '--datadir', '/tmp/datadir', '--syncmode', 'light', '--rpcapi', 'websockets', '--rinkeby', '--cache', '1337')
+  t.assert(/--datadir \/tmp\/datadir/.test(gf))
+  t.assert(/--syncmode light/.test(gf))
+  t.assert(/--ws/.test(gf))
+  t.assert(/--rinkeby/.test(gf))
+  t.assert(/--cache 1337/.test(gf))
 })
 
 
