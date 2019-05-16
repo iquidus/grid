@@ -62,19 +62,22 @@ const getBinaryUpdater = (repo, name, filter, prefix, cachePath) => {
 }
 
 const generateFlags = (userConfig, nodeSettings) => {
+  if (!Array.isArray(nodeSettings)) throw 'Settings must be an Array instance'
+
   const userConfigEntries = Object.keys(userConfig)
+
   let flags = []
+
   userConfigEntries.map(e => {
     let flag
 
-    // ruling out userConfigs not in nodeSettings
-    if (!(e in nodeSettings)) return
+    let configEntry = nodeSettings.find(s => s.id === e)
+    let flagStr = configEntry.flag
 
-    let flagStr = nodeSettings[e].flag
     if (flagStr) {
       flag = flagStr.replace(/%s/, userConfig[e]).split(' ')
-    } else if (nodeSettings[e].options) {
-      const options = nodeSettings[e].options
+    } else if (configEntry.options) {
+      const options = configEntry.options
       const selectedOption = options.find(
         f => userConfig[e] === f.value || userConfig[e] === f
       )
