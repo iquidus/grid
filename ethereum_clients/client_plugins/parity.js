@@ -63,6 +63,7 @@ module.exports = {
     },
     {
       id: 'ipcPath',
+      type: 'path',
       label: 'IPC Path',
       default: IPC_PATH,
       flag: '--ipc-path %s'
