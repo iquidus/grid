@@ -93,7 +93,7 @@ test('As a user, I want to configure Geth settings', async t => {
   t.assert(/--cache 1337/.test(gf))
 })
 
-test('As a user, I want to be know if my client is up to date', async t => {
+test('As a user, I want to know if my client is up to date', async t => {
   const {app, client, win} = await init(t)
   const versionList = new VersionList(app.client)
 
