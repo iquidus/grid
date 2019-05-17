@@ -93,6 +93,24 @@ test('As a user, I want to configure Geth settings', async t => {
   t.assert(/--cache 1337/.test(gf))
 })
 
+test('As a user, I want to be know if my client is up to date', async t => {
+  const {app, client, win} = await init(t)
+  const versionList = new VersionList(app.client)
+
+  await versionList.waitToLoad()
+
+  await versionList.clickOnItem(1)
+  await versionList.waitUntilVersionSelected(1)
+
+  await client.waitForVisible('[role=alertdialog]')
+
+  await versionList.clickOnItem(0)
+  await versionList.waitUntilVersionSelected(0)
+
+  await client.waitForVisible('[role=alertdialog]', 500, true)
+
+  t.pass()
+})
 
 // As a user, I want to download a geth node
 // As a user, I want to start/stop my geth node from the app UI. #38
