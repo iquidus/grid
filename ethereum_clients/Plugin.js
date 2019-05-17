@@ -141,8 +141,6 @@ class Plugin extends EventEmitter {
   }
 
   async start(release, config) {
-    // TODO do flag validation here based on proxy metadata
-
     const flags = this.generateFlags(config, this.config.settings)
 
     const { binaryPath, packagePath } = await this.getLocalBinary(release)

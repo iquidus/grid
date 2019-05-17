@@ -112,13 +112,13 @@ test('As a user, I want to know if my client is up to date', async t => {
   t.pass()
 })
 
-// As a user, I want to download a geth node
-// As a user, I want to start/stop my geth node from the app UI. #38
-// As a user, I want to configure my node settings and options easily. #37
+// OK - As a user, I want to download a geth node
+// OK - As a user, I want to start/stop my geth node from the app UI. #38
+// OK - As a user, I want to configure my node settings and options easily. #37
+// OK - As a user, I want to be notified when a new version of my node is available, so I don't fork. #22
+// As a user, I want to see sync status visually, so I don't have to parse the logs and guess #73
 // As a user, I want to have the connection details remembered, so I can have a consistent use of the app #23
 // As a user, I want to be reminded of updates on the app itself, so I can get latest features and fixes. #33
-// As a user, I want to see sync status visually, so I don't have to parse the logs and guess #73
-// As a user, I want to provide an existing network data directory, so that I don't have two copies of the network. #35
-// As a user, I want to be notified when a new version of my node is available, so I don't fork. #22
+// OK - As a user, I want to provide an existing network data directory, so that I don't have two copies of the network. #35
 // As a user, I want to download codesigned applications, so it works without nasty warnings on my OS #114
 // As a developer, I want to test Grid-UI build channels from the Grid [shell] interface, so we can ensure app quality standards #87
