@@ -60,13 +60,15 @@ class PluginHost extends EventEmitter {
         fs.readFileSync(path.join(PLUGIN_DIR, 'plugins.json'))
       )
     } catch (error) {
-      console.log('Error: could not parse plugin list', error)
+      console.log('error: could not parse plugin list', error)
     }
     let releases = remotePluginList.map(async pluginShortInfo => {
       try {
-        const { location } = pluginShortInfo
+        const { name: pluginName, location } = pluginShortInfo
         if (!location) {
-          throw new Error('external plugin does not specify a valid location')
+          throw new Error(
+            `error: external plugin ${pluginName} does not specify a valid location`
+          )
         }
         if (fs.existsSync(location)) {
           // load package from provided path
@@ -97,20 +99,26 @@ class PluginHost extends EventEmitter {
           if (latest.remote) {
             latest = await pluginManager.download(latest)
             if (!latest) {
-              throw new Error('error: plugin could not be fetched')
+              throw new Error(
+                `error: plugin ${pluginName} could not be fetched`
+              )
             }
           }
           // plugin verification necessary for remote plugins:
           if (!latest.verificationResult) {
-            throw new Error('external plugin has no verification info')
+            throw new Error(
+              `error: external plugin ${pluginName} has no verification info`
+            )
           }
           const { isValid, isTrusted } = latest.verificationResult
           if (!isValid) {
-            throw new Error('invalid plugin signature: unsigned or corrupt?')
+            throw new Error(
+              `error: ${pluginName} has invalid plugin signature - unsigned or corrupt?`
+            )
           }
           if (!isTrusted) {
             console.log(
-              "WARNING: the plugin is signed but the author's key is unknown"
+              `WARNING: the plugin ${pluginName} is signed but the author's key is unknown`
             )
           }
           const plugin = await this.loadPluginFromPackage(pluginManager, latest)
@@ -118,8 +126,10 @@ class PluginHost extends EventEmitter {
         }
         return undefined
       } catch (error) {
-        const { name } = pluginShortInfo
-        console.log(`remote plugin ${name} could not be loaded`, error)
+        console.log(
+          `error: remote plugin ${pluginName} could not be loaded`,
+          error
+        )
         return undefined
       }
     })
